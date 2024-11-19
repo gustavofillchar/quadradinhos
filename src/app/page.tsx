@@ -15,7 +15,7 @@ export default function Home() {
         </h2>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
           <p className="text-lg mb-2">
-            🎁 Ganhe automaticamente um cupom para concorrer a um <span className="font-semibold">iPhone 15</span>
+            🎁 Ganhe automaticamente um cupom para concorrer a um <span className="font-semibold">iPhone 16 Pro Max</span>
           </p>
           <p className="text-gray-600 text-sm">
             Após a confirmação do pagamento, você receberá seu código do cupom por e-mail e as informações para concorrer ao sorteio.

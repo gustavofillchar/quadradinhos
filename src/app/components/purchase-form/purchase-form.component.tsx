@@ -189,7 +189,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
       </div>
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <p className="text-sm text-yellow-800">
-          🎁 Você receberá {1 + extraTickets} {1 + extraTickets === 1 ? 'cupom' : 'cupons'} para concorrer ao iPhone 15!
+          🎁 Você receberá {1 + extraTickets} {1 + extraTickets === 1 ? 'cupom' : 'cupons'} para concorrer ao iPhone 16 Pro Max!
         </p>
         <p className="text-xs text-yellow-700 mt-1">
           • 1 cupom incluso com o quadradinho
