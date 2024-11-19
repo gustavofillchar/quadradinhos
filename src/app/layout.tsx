@@ -25,6 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
+      <head>
+        <title>Quadradinho Premiado - Compre para divulgar e concorra a sorteios</title>
+        <meta name="description" content="Quadradinho Premiado - Ganhe automaticamente um cupom para concorrer a um iPhone 16 Pro Max" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
