@@ -11,6 +11,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     console.log('Webhook received:', body)
     
+    // Verifica tanto o type quanto a action
     if (body.type === 'payment' && 
         body.action === 'payment.updated' && 
         body.data?.id) {
@@ -22,24 +23,10 @@ export async function POST(request: Request) {
         
         if (paymentData.status === 'approved') {
           console.log('Payment data:', paymentData.status)
-          
-          // Primeiro, busca o purchase_group_id
-          const { data: purchaseData } = await supabase
-            .from('purchases')
-            .select('purchase_group_id')
-            .eq('payment_id', String(paymentData.id))
-            .single()
-
-          if (!purchaseData?.purchase_group_id) {
-            throw new Error('Purchase group not found')
-          }
-
-          // Atualiza todos os registros do mesmo grupo
           const { error } = await supabase
             .from('purchases')
             .update({ status: 'completed' })
-            .eq('purchase_group_id', purchaseData.purchase_group_id)
-
+            .eq('payment_id', String(paymentData.id))
           if (error) {
             console.error('Supabase error:', error)
             throw error
