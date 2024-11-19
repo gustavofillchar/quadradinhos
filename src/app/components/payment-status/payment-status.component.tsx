@@ -15,13 +15,13 @@ const PaymentStatus: React.FC<PaymentStatusProps> = ({ paymentId }) => {
     const checkPaymentStatus = async () => {
       const { data, error } = await supabase
         .from('purchases')
-        .select('status')
+        .select('status, position')
         .eq('payment_id', paymentId)
         .single()
 
       if (data?.status === 'completed') {
         setIsCompleted(true)
-        router.push('/')
+        router.push(`/square/${data.position}`)
       }
     }
 
