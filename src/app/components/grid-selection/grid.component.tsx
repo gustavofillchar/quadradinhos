@@ -101,10 +101,10 @@ const GridComponent: React.FC<GridProps> = ({ onPositionSelect }) => {
   }, [onPositionSelect])
 
   const GridSquare = useMemo(() => {
-    return ({ position, isOccupied, isReserved }: { 
-      position: number, 
-      isOccupied: OccupiedPosition | undefined, 
-      isReserved: boolean 
+    return ({ position, isOccupied, isReserved }: {
+      position: number,
+      isOccupied: OccupiedPosition | undefined,
+      isReserved: boolean
     }) => {
       const squareContent = (
         <div
@@ -121,11 +121,15 @@ const GridComponent: React.FC<GridProps> = ({ onPositionSelect }) => {
         >
           {isOccupied ? (
             <>
-              <img
-                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${isOccupied.imagePath}`}
-                alt={isOccupied.name}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+              {isOccupied.imagePath ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${isOccupied.imagePath}`}
+                  alt={isOccupied.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 w-full h-full bg-green-500" />
+              )}
               <div className="absolute hidden group-hover:block z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2">
                 <div className="bg-white rounded-lg shadow-lg p-2">
                   <p className="text-xs text-center text-gray-700 whitespace-nowrap">{isOccupied.name}</p>

@@ -18,6 +18,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [description, setDescription] = useState('')
+  const [showDescription, setShowDescription] = useState(false)
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({})
   const [image, setImage] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
@@ -52,34 +53,33 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
-      if (!image) {
-        throw new Error('Por favor selecione uma imagem');
+      // Image is now optional
+      let fileName = null;
+      if (image) {
+        const fileExt = image.name.split('.').pop();
+        fileName = `${Math.random()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(fileName, image);
+    
+        if (uploadError) {
+          throw uploadError;
+        }
       }
-
+  
       if (availablePositions.length === 0) {
         throw new Error('Não há posições disponíveis. Por favor, selecione outra posição inicial.');
       }
-
+  
       if (availablePositions.length < quantity) {
         throw new Error(`Só existem ${availablePositions.length} posições disponíveis a partir da posição selecionada.`);
       }
-
-      // Upload da imagem
-      const fileExt = image.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(fileName, image);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
+  
       // Usar as posições disponíveis já verificadas
       const selectedPositions = availablePositions.slice(0, quantity);
-
+  
       // Criar pagamento
       const response = await fetch('/api/create-payment', {
         method: 'POST',
@@ -91,7 +91,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
           email,
           socialLinks,
           description,
-          imagePath: fileName,
+          imagePath: fileName, // This will be null if no image was uploaded
           position: selectedPosition,
           extraTickets,
           reservedAt: new Date().toISOString()
@@ -145,14 +145,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 bg-white p-6 rounded-lg shadow-lg">
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-xl font-bold mb-4">Quadradinho #{selectedPosition}</h2>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-        <p className="text-sm text-blue-800">
-          ✨ Ao comprar seu quadradinho, você ganha um link personalizado para divulgar sua imagem e suas redes sociais!
-        </p>
-      </div>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -228,18 +222,30 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Descrição <span className="text-gray-400 text-xs">(opcional)</span>
-        </label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Descreva o que você quer divulgar..."
-          rows={3}
-        />
-      </div>
+      {!showDescription && (
+        <button
+          type="button"
+          onClick={() => setShowDescription(true)}
+          className="text-sm px-3 py-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200"
+        >
+          + Adicionar Descrição
+        </button>
+      )}
+
+      {showDescription && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Descrição <span className="text-gray-400 text-xs">(opcional)</span>
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="Descreva o que você quer divulgar..."
+            rows={3}
+          />
+        </div>
+      )}
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
@@ -329,11 +335,17 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ selectedPosition }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+        className="w-full bg-blue-500 text-white font-bold px-4 py-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
       >
         {loading ? 'Processando...' :
           `Comprar por R$ ${(1 + extraTickets).toFixed(2)}`}
       </button>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <p className="text-sm text-blue-800">
+          ✨ Ao comprar seu quadradinho, você ganha um link personalizado para divulgar sua imagem e suas redes sociais!
+        </p>
+      </div>
     </form>
   )
 }

@@ -9,6 +9,7 @@ interface ImageUploadProps {
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -45,7 +46,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageChange }) => {
   const handleRemoveImage = () => {
     setPreview(null);
     onImageChange(null);
+    setShowUpload(false);
   };
+
+  if (!showUpload) {
+    return (
+      <button
+        type="button"
+        onClick={() => setShowUpload(true)}
+        className="text-sm px-3 py-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200"
+      >
+        + Adicionar Imagem
+      </button>
+    );
+  }
 
   return (
     <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
