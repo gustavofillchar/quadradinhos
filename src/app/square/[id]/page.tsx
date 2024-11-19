@@ -1,16 +1,16 @@
-import { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 type Props = {
-  params: Promise<{ id: string }> | { id: string }
+  params?: any,
+  searchParams?: any
 }
 
 export async function generateMetadata(
   { params }: Props
 ): Promise<Metadata> {
-  const resolvedParams = await params
-  const position = Number(resolvedParams.id)
+  const position = Number(params.id)
   
   const { data: purchase } = await supabase
     .from('purchases')
@@ -25,12 +25,9 @@ export async function generateMetadata(
   }
 }
 
-export default async function SquarePage(
-  { params }: Props
-) {
-  const resolvedParams = await params
-  const position = Number(resolvedParams.id)
-  
+export default async function SquarePage({ params }: Props) {
+  const position = Number(params.id)
+ 
   const { data: purchase } = await supabase
     .from('purchases')
     .select('*')
