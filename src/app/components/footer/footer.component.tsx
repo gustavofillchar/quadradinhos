@@ -9,10 +9,10 @@ const Footer: React.FC = () => {
             © {new Date().getFullYear()} Quadradinhos de Um Real. Todos os direitos reservados.
           </div>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-gray-900 transition-colors">
+            <Link href="/terms" className="hover:text-gray-900 transition-colors">
               Termos de Serviço
             </Link>
-            <Link href="#" className="hover:text-gray-900 transition-colors">
+            <Link href="/privacy" className="hover:text-gray-900 transition-colors">
               Política de Privacidade
             </Link>
           </div>
