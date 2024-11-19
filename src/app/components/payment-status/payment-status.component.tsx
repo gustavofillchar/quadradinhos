@@ -21,7 +21,7 @@ const PaymentStatus: React.FC<PaymentStatusProps> = ({ paymentId }) => {
 
       if (data?.status === 'completed') {
         setIsCompleted(true)
-        router.push('/purchases')
+        router.push('/')
       }
     }
 

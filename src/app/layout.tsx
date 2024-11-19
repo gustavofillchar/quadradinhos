@@ -1,7 +1,11 @@
+'use client'
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./components/header/header.component";
+import { CounterProvider } from "./contexts/CounterContext";
+import Footer from "./components/footer/footer.component";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -13,24 +17,22 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-export const metadata: Metadata = {
-  title: "Quadradinhos de UM REAL",
-  description: "Quadradinhos de UM REAL",
-};
-
+ 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-br">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
+        <CounterProvider>
+          <Header />
+          {children}
+          <Footer />
+        </CounterProvider>
       </body>
     </html>
   );
